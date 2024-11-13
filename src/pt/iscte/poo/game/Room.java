@@ -22,12 +22,13 @@ import java.util.Scanner;
 
 public class Room {
 	
-	//private Point2D heroStartingPosition = new Point2D(1, 1);
+	private Point2D heroStartingPosition = new Point2D(0, 8);
 	private Manel manel;
 	private List<ImageTile> gameObjects = new ArrayList<>();
 	
 	public Room() {
-        // Inicializa apenas a lista de objetos
+        this.manel = new Manel(heroStartingPosition);
+		ImageGUI.getInstance().addImage(manel);
         gameObjects = new ArrayList<>();
     }
 	
@@ -76,47 +77,43 @@ public class Room {
 	            return new DonkeyKong(position); // Representa o Donkey Kong
 	        case 'b':
 	            return new GoodMeat(position); // Representa carne
-	        case 'J':
-	            // Instancia o Manel diretamente na posição definida no arquivo
-	            manel = new Manel(position);
-	            return manel;
 	        default:
 	            return null; // Ignora caracteres desconhecidos
 	    }
 	}
 	
 	// Método para encontrar a posição mais à esquerda acima da linha de paredes mais baixa
-	private Point2D findLeftmostPositionAboveLowestWall() {
-	    int lowestWallY = -1;
-
-	    // Encontra a linha mais baixa com Wall
-	    for (ImageTile obj : gameObjects) {
-	        if (obj instanceof Wall && obj.getPosition().getY() > lowestWallY) {
-	            lowestWallY = obj.getPosition().getY();
-	        }
-	    }
-
-	    // Define a posição inicial do Manel, logo acima e à esquerda da linha de Wall mais baixa
-	    for (int x = 0; x < 10; x++) { // Supondo uma largura de 10 blocos
-	        Point2D potentialPosition = new Point2D(x, lowestWallY - 1);
-	        
-	        // Verifica se a posição está livre (sem outros objetos)
-	        boolean positionIsFree = true;
-	        for (ImageTile obj : gameObjects) {
-	            if (obj.getPosition().equals(potentialPosition)) {
-	                positionIsFree = false;
-	                break;
-	            }
-	        }
-
-	        if (positionIsFree) {
-	            return potentialPosition;
-	        }
-	    }
-
-	    // Se não encontrar uma posição disponível (caso improvável), retorna a posição padrão
-	    return new Point2D(1, lowestWallY - 1);
-	}
+//	private Point2D findLeftmostPositionAboveLowestWall() {
+//	    int lowestWallY = -1;
+//
+//	    // Encontra a linha mais baixa com Wall
+//	    for (ImageTile obj : gameObjects) {
+//	        if (obj instanceof Wall && obj.getPosition().getY() > lowestWallY) {
+//	            lowestWallY = obj.getPosition().getY();
+//	        }
+//	    }
+//
+//	    // Define a posição inicial do Manel, logo acima e à esquerda da linha de Wall mais baixa
+//	    for (int x = 0; x < 10; x++) { // Supondo uma largura de 10 blocos
+//	        Point2D potentialPosition = new Point2D(x, lowestWallY - 1);
+//
+//	        // Verifica se a posição está livre (sem outros objetos)
+//	        boolean positionIsFree = true;
+//	        for (ImageTile obj : gameObjects) {
+//	            if (obj.getPosition().equals(potentialPosition)) {
+//	                positionIsFree = false;
+//	                break;
+//	            }
+//	        }
+//
+//	        if (positionIsFree) {
+//	            return potentialPosition;
+//	        }
+//	    }
+//
+//	    // Se não encontrar uma posição disponível (caso improvável), retorna a posição padrão
+//	    return new Point2D(1, lowestWallY - 1);
+//	}
 	
 	public List<ImageTile> getGameObjects() {
         return gameObjects;

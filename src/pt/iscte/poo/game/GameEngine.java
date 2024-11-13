@@ -12,7 +12,7 @@ public class GameEngine implements Observer {
 	private int lastTickProcessed = 0;
 	
 	public GameEngine() {
-	    loadRoom("rooms/room0.txt");
+	    loadRoom("rooms/room2.txt");
 	    ImageGUI.getInstance().update();
 	}
 
