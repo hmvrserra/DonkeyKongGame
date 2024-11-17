@@ -1,39 +1,17 @@
 package objects;
 
-import pt.iscte.poo.gui.ImageTile;
-import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 
-public class Manel implements ImageTile {
-
+public class Manel extends Character {
+	
 	private Point2D position;
-	
-	public Manel(Point2D initialPosition){
-		position = initialPosition;
-	}
-	
-	@Override
-	public String getName() {
-		return "JumpMan";
-	}
 
-	@Override
-	public Point2D getPosition() {
-		return position;
-	}
-
-	@Override
-	public int getLayer() {
-		// TODO Auto-generated method stub
-		return 1;
+	public Manel(Point2D position) {
+		super(position, 2, 100, 20);
 	}
 	
-	public void setPosition(Point2D newPosition) {
-        this.position = newPosition;
+	@Override
+    public String getName() {
+        return "JumpMan";
     }
-
-	public void move() {
-		position = position.plus(Direction.random().asVector());	
-	}
-	
 }

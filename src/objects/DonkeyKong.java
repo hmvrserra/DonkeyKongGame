@@ -1,27 +1,13 @@
 package objects;
 
-import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.utils.Point2D;
-
-public class DonkeyKong implements ImageTile {
-    private Point2D position;
-
+public class DonkeyKong extends Character {
     public DonkeyKong(Point2D position) {
-        this.position = position;
+        super(position, 2 , 100, 20);
     }
-
+    
     @Override
     public String getName() {
         return "DonkeyKong";
-    }
-
-    @Override
-    public int getLayer() {
-        return 0;
-    }
-
-    @Override
-    public Point2D getPosition() {
-        return position;
     }
 }
