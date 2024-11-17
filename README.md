@@ -1,2 +1,2 @@
 # POO_LEI_Projeto
-Repository for the final prject of Programação Orientada para Objetos
+Repository for the final project of Programação Orientada para Objetos
