@@ -1,9 +1,12 @@
 package pt.iscte.poo.game;
 
+import objects.Manel;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
 import pt.iscte.poo.utils.Direction;
+import pt.iscte.poo.utils.Point2D;
+import pt.iscte.poo.utils.Vector2D;
 
 public class GameEngine implements Observer {
 	
@@ -28,7 +31,10 @@ public class GameEngine implements Observer {
 		}
 		int t = ImageGUI.getInstance().getTicks();
 		while (lastTickProcessed < t) {
-			currentRoom.update();
+			Point2D belowPosition = currentRoom.getManel().getPosition().plus(new Vector2D(0, -1));
+			if (currentRoom.isClimbable(belowPosition)) {
+				currentRoom.update();
+			}
 			processTick();
 		}
 		ImageGUI.getInstance().update();

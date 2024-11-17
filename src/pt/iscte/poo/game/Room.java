@@ -18,9 +18,10 @@ public class Room {
 	private String nextRoomFile; // Nome do próximo ficheiro de sala, se houver
 	
 	public Room() {
-        gameObjects = new ArrayList<>();
+		this.manel = new Manel(new Point2D(0, 8));
+        this.gameObjects = new ArrayList<>();
 		addBackground();
-        loadRoomFromFile("rooms/room0.txt");
+        loadRoomFromFile("rooms/room1.txt");
         ImageGUI.getInstance().addImages(gameObjects);
     }
 	
@@ -43,7 +44,6 @@ public class Room {
                             gameObjects.add(new Stairs(position));
                             break;
                         case 'H':
-                            this.manel = new Manel(position);
                             gameObjects.add(manel);
                             break;
                         case 'G':
@@ -68,33 +68,23 @@ public class Room {
         }
     }
 
-	private Point2D findStartingPositionForManel() { // Encontra a posição mais abaixo e à esquerda possível para Manel
-	    int maxY = 9;
-	    int maxX = 9;
-
-	    for (int y = maxY; y >= 0; y--) {
-	        for (int x = 0; x <= maxX; x++) {
-	            Point2D position = new Point2D(x, y);
-	            boolean positionIsFree = true;
-
-	            // Verifica se há algum objeto na posição para além de um 'Black' (layer 0)
-	            for (GameObject obj : gameObjects) {
-	                if (obj.getPosition().equals(position) && obj.getLayer() > 0) {
-	                    positionIsFree = false;
-	                    break;
-	                }
-	            }
-
-	            // Retorna a primeira posição livre encontrada
-	            if (positionIsFree) {
-	                return position;
-	            }
-	        }
-	    }
-
-	    // Retorna uma posição padrão caso não encontre uma posição livre (caso improvável)
-	    return new Point2D(1, 1);
-	}
+//	private Point2D findStartingPositionForManel() { // Encontra a posição mais abaixo e à esquerda possível para Manel
+//	    for (int y = 9; y >= 0; y--) {
+//	        for (int x = 0; x <= 9; x++) {
+//	            Point2D position = new Point2D(x, y);
+//				boolean isOccupied = false;
+//	            for (GameObject obj : gameObjects) {
+//	                if (obj.getPosition().equals(position) && obj.getLayer() > 0) {
+//	                    isOccupied = true;
+//						break;
+//	                }
+//	            }
+//				if (!isOccupied)
+//	            	return position;
+//	        }
+//	    }
+//	    return new Point2D(1, 1);
+//	}
 	
 	public void moveManel(Direction direction, Room room) {
 		manel.move(direction, room);
@@ -117,8 +107,20 @@ public class Room {
 		return false;
 	}
 
+	public boolean isClimbable(Point2D position) {
+		for (GameObject obj : gameObjects) {
+			if (obj instanceof Climbable && obj.getPosition().equals(position)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void update() {
 		manel.update(this);
+	}
+	public Manel getManel() {
+		return this.manel;
 	}
 
 	@Override

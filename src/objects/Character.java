@@ -31,15 +31,40 @@ public abstract class Character extends GameObject {
         this.damage = damage;
     }
 
+//    public void move(Direction direction, Room room) {
+//        Point2D newPosition = getPosition().plus(direction.asVector());
+//        if (direction != Direction.UP || direction != Direction.DOWN|| room.isCollision(newPosition) || room.isClimbable(newPosition)) {
+//            setPosition(newPosition);
+//        }
+//    }
+
     public void move(Direction direction, Room room) {
         Point2D newPosition = getPosition().plus(direction.asVector());
-        if (direction == Direction.UP || newPosition.getX() < 0 || newPosition.getY() < 0 || newPosition.getX() >= 10 || newPosition.getY() >= 10) {
+
+        if (newPosition.getX() < 0 || newPosition.getY() < 0 || newPosition.getX() >= 10 || newPosition.getY() >= 10) {
             return;
         }
+
+        if (direction == Direction.UP || direction == Direction.DOWN) {
+            boolean canClimb = false;
+
+            if (direction == Direction.UP) {
+                Point2D belowNewPosition = newPosition.plus(Direction.DOWN.asVector());
+                canClimb = room.isClimbable(belowNewPosition);
+            } else if (direction == Direction.DOWN) {
+                canClimb = room.isClimbable(newPosition);
+            }
+
+            if (!canClimb) {
+                return;
+            }
+        }
+
         if (!room.isCollision(newPosition)) {
             setPosition(newPosition);
         }
     }
+
 
     public void applyGravity(Room room) {
         Point2D belowPosition = getPosition().plus(new Vector2D(0, 1)); // Position directly below the character
