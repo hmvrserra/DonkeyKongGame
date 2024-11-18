@@ -31,8 +31,8 @@ public class GameEngine implements Observer {
 		}
 		int t = ImageGUI.getInstance().getTicks();
 		while (lastTickProcessed < t) {
-			Point2D belowPosition = currentRoom.getManel().getPosition().plus(new Vector2D(0, -1));
-			if (currentRoom.isClimbable(belowPosition)) {
+			Point2D belowPosition = currentRoom.getManel().getPosition().plus(new Vector2D(0, 1));
+			if (!currentRoom.isClimbable(belowPosition)) {
 				currentRoom.update();
 			}
 			processTick();
@@ -45,7 +45,5 @@ public class GameEngine implements Observer {
 		lastTickProcessed++;
 
 	}
-
-
 
 }

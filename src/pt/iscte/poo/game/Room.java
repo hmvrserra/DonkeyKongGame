@@ -21,7 +21,7 @@ public class Room {
 		this.manel = new Manel(new Point2D(0, 8));
         this.gameObjects = new ArrayList<>();
 		addBackground();
-        loadRoomFromFile("rooms/room1.txt");
+        loadRoomFromFile("rooms/room2.txt");
         ImageGUI.getInstance().addImages(gameObjects);
     }
 	
