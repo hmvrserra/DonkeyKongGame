@@ -31,13 +31,6 @@ public abstract class Character extends GameObject {
         this.damage = damage;
     }
 
-//    public void move(Direction direction, Room room) {
-//        Point2D newPosition = getPosition().plus(direction.asVector());
-//        if (direction != Direction.UP || direction != Direction.DOWN|| room.isCollision(newPosition) || room.isClimbable(newPosition)) {
-//            setPosition(newPosition);
-//        }
-//    }
-
     public void move(Direction direction, Room room) {
         Point2D newPosition = getPosition().plus(direction.asVector());
 
