@@ -14,14 +14,15 @@ import java.util.Scanner;
 public class Room {
 	private Manel manel;
 	private List<GameObject> gameObjects;
-	private char doorSymbol; // Símbolo da porta atual (ex: '0')
+	private char doorSymbol; // Símbolo da porta atual
 	private String nextRoomFile; // Nome do próximo ficheiro de sala, se houver
 	
 	public Room() {
-		this.manel = new Manel(new Point2D(0, 8));
-        this.gameObjects = new ArrayList<>();
+		this.gameObjects = new ArrayList<>();
 		addBackground();
-        loadRoomFromFile("rooms/room2.txt");
+        loadRoomFromFile("rooms/roomTEST.txt");
+		this.manel = new Manel(findStartingPositionForManel());
+		gameObjects.add(manel);
         ImageGUI.getInstance().addImages(gameObjects);
     }
 	
@@ -44,7 +45,7 @@ public class Room {
                             gameObjects.add(new Stairs(position));
                             break;
                         case 'H':
-                            gameObjects.add(manel);
+                            gameObjects.add(new Hammer(position));
                             break;
                         case 'G':
                             gameObjects.add(new DonkeyKong(position));
@@ -68,23 +69,23 @@ public class Room {
         }
     }
 
-//	private Point2D findStartingPositionForManel() { // Encontra a posição mais abaixo e à esquerda possível para Manel
-//	    for (int y = 9; y >= 0; y--) {
-//	        for (int x = 0; x <= 9; x++) {
-//	            Point2D position = new Point2D(x, y);
-//				boolean isOccupied = false;
-//	            for (GameObject obj : gameObjects) {
-//	                if (obj.getPosition().equals(position) && obj.getLayer() > 0) {
-//	                    isOccupied = true;
-//						break;
-//	                }
-//	            }
-//				if (!isOccupied)
-//	            	return position;
-//	        }
-//	    }
-//	    return new Point2D(1, 1);
-//	}
+	private Point2D findStartingPositionForManel() { // Encontra a posição mais abaixo e à esquerda possível para Manel
+	    for (int y = 9; y >= 0; y--) {
+	        for (int x = 0; x <= 9; x++) {
+	            Point2D position = new Point2D(x, y);
+				boolean isOccupied = false;
+	            for (GameObject obj : gameObjects) {
+	                if (isCollision(position)) {
+	                    isOccupied = true;
+						break;
+	                }
+	            }
+				if (!isOccupied)
+	            	return position;
+	        }
+	    }
+	    return new Point2D(1, 1);
+	}
 	
 	public void moveManel(Direction direction, Room room) {
 		manel.move(direction, room);
