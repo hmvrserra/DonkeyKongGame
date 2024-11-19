@@ -1,6 +1,6 @@
 package objects;
 
-import pt.iscte.poo.utils.Point2D;
+import  pt.iscte.poo.utils.Point2D;
 import pt.iscte.poo.gui.ImageTile;
 
 public abstract class GameObject implements ImageTile {

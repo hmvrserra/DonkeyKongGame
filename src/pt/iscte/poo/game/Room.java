@@ -70,8 +70,8 @@ public class Room {
     }
 
 	private Point2D findStartingPositionForManel() { // Encontra a posição mais abaixo e à esquerda possível para Manel
-	    for (int y = 9; y >= 0; y--) {
-	        for (int x = 0; x <= 9; x++) {
+		for (int x = 0; x <= 9; x++){
+	        for (int y = 9; y >= 0; y--){
 	            Point2D position = new Point2D(x, y);
 				boolean isOccupied = false;
 	            for (GameObject obj : gameObjects) {
