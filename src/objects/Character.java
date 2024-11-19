@@ -5,7 +5,7 @@ import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 import pt.iscte.poo.utils.Vector2D;
 
-public abstract class Character extends GameObject implements Collidable {
+public abstract class Character extends GameObject {
     private int health;
     private int damage;
 
