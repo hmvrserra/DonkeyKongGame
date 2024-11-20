@@ -61,7 +61,7 @@ public abstract class Character extends GameObject {
 
     public void applyGravity(Room room) {
         Point2D belowPosition = getPosition().plus(new Vector2D(0, 1)); // Position directly below the character
-        if (!room.isCollision(belowPosition)) {
+        if (!room.isCollision(belowPosition) && !room.isClimbable(belowPosition)) {
             setPosition(belowPosition);
         }
     }

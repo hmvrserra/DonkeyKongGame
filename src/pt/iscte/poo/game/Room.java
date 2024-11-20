@@ -20,7 +20,7 @@ public class Room {
 	public Room() {
 		this.gameObjects = new ArrayList<>();
 		addBackground();
-        loadRoomFromFile("rooms/roomTEST.txt");
+        loadRoomFromFile("rooms/room2.txt");
 		this.manel = new Manel(findStartingPositionForManel());
 		gameObjects.add(manel);
         ImageGUI.getInstance().addImages(gameObjects);
