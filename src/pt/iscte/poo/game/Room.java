@@ -12,23 +12,23 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Room {
+	private String filename;
 	private Manel manel;
 	private List<GameObject> gameObjects;
 	private char doorSymbol; // Símbolo da porta atual
 	private String nextRoomFile; // Nome do próximo ficheiro de sala, se houver
 	
-	public Room() {
+	public Room(String filename) {
+		this.filename = filename;
 		this.gameObjects = new ArrayList<>();
-		addBackground();
-        loadRoomFromFile("rooms/room2.txt");
-		this.manel = new Manel(findStartingPositionForManel());
-		gameObjects.add(manel);
-        ImageGUI.getInstance().addImages(gameObjects);
+        loadRoomFromFile(filename);
     }
 	
-	private void loadRoomFromFile(String filename) {
+	public void loadRoomFromFile(String filename) {
+
         try (Scanner scanner = new Scanner(new File(filename))) {
-            if (scanner.hasNextLine()) {
+			addBackground();
+			if (scanner.hasNextLine()) {
                 scanner.nextLine(); // Ignorar a primeira linha
             }
             int y = 0;
@@ -45,7 +45,8 @@ public class Room {
                             gameObjects.add(new Stairs(position));
                             break;
                         case 'H':
-                            gameObjects.add(new Hammer(position));
+							this.manel = new Manel(position);
+                            gameObjects.add(manel);
                             break;
                         case 'G':
                             gameObjects.add(new DonkeyKong(position));
@@ -59,7 +60,6 @@ public class Room {
                         case '0':
                             gameObjects.add(new Door(position));
                             break;
-                        //ADICIONAR O RESTO DOS OBJETOS
                     }
                 }
                 y++;
@@ -122,6 +122,14 @@ public class Room {
 	}
 	public Manel getManel() {
 		return this.manel;
+	}
+
+	public List<GameObject> getGameObjects() {
+		return gameObjects;
+	}
+
+	public String getFilename() {
+		return filename;
 	}
 
 	@Override

@@ -8,18 +8,29 @@ import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 import pt.iscte.poo.utils.Vector2D;
 
+import javax.swing.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameEngine implements Observer {
-	
-	private Room currentRoom = new Room();
+
+	public List<Room> rooms;
+	private Room currentRoom;
 	private int lastTickProcessed = 0;
-	
+
 	public GameEngine() {
+		rooms = new ArrayList<>();
+		loadRooms();
+		sortRooms();
+		currentRoom = rooms.get(3);
+		ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
 		ImageGUI.getInstance().update();
 	}
 
 	@Override
 	public void update(Observed source) {
-		
+
 		if (ImageGUI.getInstance().wasKeyPressed()) {
 			int k = ImageGUI.getInstance().keyPressed();
 			System.out.println("Keypressed " + k);
@@ -43,5 +54,32 @@ public class GameEngine implements Observer {
 		lastTickProcessed++;
 
 	}
+
+	private void loadRooms() {
+		File folder = new File("rooms");
+		File[] listOfFiles = folder.listFiles();
+		for (File file : listOfFiles) {
+			if (file.isFile()) {
+				Room room = new Room(file.getPath());
+				rooms.add(room);
+			}
+		}
+	}
+
+	private void changeRoom(Room room) {
+		currentRoom = room;
+		ImageGUI.getInstance().clearImages();
+		ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
+		ImageGUI.getInstance().update();
+	}
+
+	private void sortRooms() {
+		rooms.sort((r1, r2) -> r1.getFilename().compareTo(r2.getFilename()));
+	}
+
+	public List<Room> getRooms() {
+		return rooms;
+	}
+
 
 }

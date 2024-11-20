@@ -1,4 +1,4 @@
-#2;room2.txt
+#W
 WPG  G
 WWWWWWWWWS
          S
