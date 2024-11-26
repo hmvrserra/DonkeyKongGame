@@ -60,6 +60,9 @@ public class Room {
                         case '0':
                             gameObjects.add(new Door(position));
                             break;
+						case 'm':
+							gameObjects.add(new Hammer(position));
+							break;
                     }
                 }
                 y++;
@@ -110,11 +113,30 @@ public class Room {
 
 	public boolean isClimbable(Point2D position) {
 		for (GameObject obj : gameObjects) {
-			if (obj instanceof Climbable && obj.getPosition().equals(position)) {
+			if (obj.canClimb() && obj.getPosition().equals(position)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public boolean isTrap(Point2D position) {
+		for (GameObject obj : gameObjects) {
+			if (obj instanceof Trap && obj.getPosition().equals(position)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void removeItem(Point2D position) {
+		for (GameObject obj : gameObjects) {
+			if (obj instanceof Collectable && obj.getPosition().equals(position)) {
+				gameObjects.remove(obj);
+				ImageGUI.getInstance().removeImage(obj);
+				break;
+			}
+		}
 	}
 
 	public void update() {

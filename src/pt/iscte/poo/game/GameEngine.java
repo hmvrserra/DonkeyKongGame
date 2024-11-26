@@ -9,6 +9,7 @@ import pt.iscte.poo.utils.Point2D;
 import pt.iscte.poo.utils.Vector2D;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class GameEngine implements Observer {
 		rooms = new ArrayList<>();
 		loadRooms();
 		sortRooms();
-		currentRoom = rooms.get(3);
+		currentRoom = rooms.get(0);
 		ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
 		ImageGUI.getInstance().update();
 	}
@@ -47,6 +48,10 @@ public class GameEngine implements Observer {
 			processTick();
 		}
 		ImageGUI.getInstance().update();
+		currentRoom.removeItem(currentRoom.getManel().getPosition());
+
+		//Função a testar a vida do Heroi
+		ImageGUI.getInstance().setStatusMessage("Manel Health: " + currentRoom.getManel().getHealth());
 	}
 
 	private void processTick() {

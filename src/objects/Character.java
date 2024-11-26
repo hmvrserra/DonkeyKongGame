@@ -66,8 +66,16 @@ public abstract class Character extends GameObject {
         }
     }
 
-    public void update(Room room) {
-        applyGravity(room);
+    public void isTrap(Room room){
+        Point2D currentPosition = getPosition();
+        if(room.isTrap(currentPosition)){
+            setHealth(getHealth()-50);
+        }
     }
 
+
+    public void update(Room room) {
+        applyGravity(room);
+        isTrap(room);
+    }
 }
