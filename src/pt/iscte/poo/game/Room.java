@@ -16,7 +16,6 @@ public class Room {
 	private Manel manel;
 	private List<GameObject> gameObjects;
 	private char doorSymbol; // Símbolo da porta atual
-	private String nextRoomFile; // Nome do próximo ficheiro de sala, se houver
 	
 	public Room(String filename) {
 		this.filename = filename;
@@ -111,6 +110,14 @@ public class Room {
 		return false;
 	}
 
+	public boolean isInterectable(Point2D position) {
+		for (GameObject obj : gameObjects) {
+			if (obj instanceof Interactable && obj.getPosition().equals(position)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	public boolean isClimbable(Point2D position) {
 		for (GameObject obj : gameObjects) {
 			if (obj.canClimb() && obj.getPosition().equals(position)) {

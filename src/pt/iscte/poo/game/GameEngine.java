@@ -18,13 +18,14 @@ public class GameEngine implements Observer {
 
 	public List<Room> rooms;
 	private Room currentRoom;
+	private int currentRoomNum = 0;
 	private int lastTickProcessed = 0;
 
 	public GameEngine() {
 		rooms = new ArrayList<>();
 		loadRooms();
 		sortRooms();
-		currentRoom = rooms.get(0);
+		currentRoom = rooms.get(currentRoomNum);
 		ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
 		ImageGUI.getInstance().update();
 	}
@@ -49,6 +50,15 @@ public class GameEngine implements Observer {
 		}
 		ImageGUI.getInstance().update();
 		currentRoom.removeItem(currentRoom.getManel().getPosition());
+
+		if (currentRoom.isInterectable(currentRoom.getManel().getPosition())){
+			currentRoomNum++;
+			currentRoom = rooms.get(currentRoomNum);
+			ImageGUI.getInstance().clearImages();
+			ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
+			ImageGUI.getInstance().update();
+		}
+
 
 		//Função a testar a vida do Heroi
 		ImageGUI.getInstance().setStatusMessage("Manel Health: " + currentRoom.getManel().getHealth());

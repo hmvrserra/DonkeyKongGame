@@ -1,7 +1,7 @@
 package objects;
 
 import pt.iscte.poo.utils.Point2D;
-public class Door extends StaticObject {
+public class Door extends StaticObject implements Interactable{
 
     public Door(Point2D position) {
         super(position, 1);
@@ -12,5 +12,9 @@ public class Door extends StaticObject {
         return "DoorClosed";
     }
 
-    //PORTA AINDA SEM OS DIFERENTES ESTADOS
+    @Override
+    public boolean isInteractable(){
+        return true;
+    }
+
 }
