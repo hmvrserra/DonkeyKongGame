@@ -46,6 +46,7 @@ public class GameEngine implements Observer {
 		while (lastTickProcessed < t) {
 			Point2D belowPosition = currentRoom.getManel().getPosition().plus(new Vector2D(0, 1));
 			currentRoom.update();
+			currentRoom.getDonkeyKong().throwBanana(currentRoom);
 			processTick();
 		}
 		ImageGUI.getInstance().update();
@@ -94,6 +95,10 @@ public class GameEngine implements Observer {
 
 	public List<Room> getRooms() {
 		return rooms;
+	}
+
+	public Room getCurrentRoom() {
+		return currentRoom;
 	}
 
 

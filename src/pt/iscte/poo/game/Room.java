@@ -14,6 +14,7 @@ import java.util.Scanner;
 public class Room {
 	private String filename;
 	private Manel manel;
+	private DonkeyKong dk;
 	private List<GameObject> gameObjects;
 	private char doorSymbol; // Símbolo da porta atual
 	
@@ -48,7 +49,8 @@ public class Room {
                             gameObjects.add(manel);
                             break;
                         case 'G':
-                            gameObjects.add(new DonkeyKong(position));
+							this.dk = new DonkeyKong(position);
+                            gameObjects.add(dk);
                             break;
                         case 't':
                             gameObjects.add(new Trap(position));
@@ -71,22 +73,28 @@ public class Room {
         }
     }
 
-	private Point2D findStartingPositionForManel() { // Encontra a posição mais abaixo e à esquerda possível para Manel
-		for (int x = 0; x <= 9; x++){
-	        for (int y = 9; y >= 0; y--){
-	            Point2D position = new Point2D(x, y);
-				boolean isOccupied = false;
-	            for (GameObject obj : gameObjects) {
-	                if (isCollision(position)) {
-	                    isOccupied = true;
-						break;
-	                }
-	            }
-				if (!isOccupied)
-	            	return position;
-	        }
-	    }
-	    return new Point2D(1, 1);
+//	private Point2D findStartingPositionForManel() { // Encontra a posição mais abaixo e à esquerda possível para Manel
+//		for (int x = 0; x <= 9; x++){
+//	        for (int y = 9; y >= 0; y--){
+//	            Point2D position = new Point2D(x, y);
+//				boolean isOccupied = false;
+//	            for (GameObject obj : gameObjects) {
+//	                if (isCollision(position)) {
+//	                    isOccupied = true;
+//						break;
+//	                }
+//	            }
+//				if (!isOccupied)
+//	            	return position;
+//	        }
+//	    }
+//	    return new Point2D(1, 1);
+//	}
+
+	private void terminateGame(String message) {
+		System.err.println(message);
+		ImageGUI.getInstance().dispose();
+		System.exit(1);
 	}
 	
 	public void moveManel(Direction direction, Room room) {
@@ -146,11 +154,21 @@ public class Room {
 		}
 	}
 
+	public void addGameObject(GameObject obj) {
+		gameObjects.add(obj);
+		ImageGUI.getInstance().addImage(obj);
+	}
+
 	public void update() {
 		manel.update(this);
+		dk.update(this);
 	}
 	public Manel getManel() {
 		return this.manel;
+	}
+
+	public DonkeyKong getDonkeyKong() {
+		return this.dk;
 	}
 
 	public List<GameObject> getGameObjects() {
