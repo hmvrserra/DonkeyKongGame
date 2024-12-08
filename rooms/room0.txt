@@ -1,5 +1,6 @@
 #0;room1.txt
-0 G
+#1;room2.txt
+0 G   1   
 WWWWWWWSWW
        S  
 tWSWWWWWWW
@@ -9,6 +10,3 @@ WWWWSWWWWW
 WWWWWSWWWW
      S H  
 WWWWWWWWWW
-
-
-

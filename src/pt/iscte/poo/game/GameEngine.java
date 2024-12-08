@@ -20,16 +20,33 @@ public class GameEngine implements Observer {
 	private Room currentRoom;
 	private int currentRoomNum = 0;
 	private int lastTickProcessed = 0;
-
+	private static GameEngine INSTANCE;
+	
 	public GameEngine() {
-		rooms = new ArrayList<>();
-		loadRooms();
+    	INSTANCE = this; 
+        rooms = new ArrayList<>();
+        loadAllRooms();
 		sortRooms();
-		currentRoom = rooms.get(currentRoomNum);
-		ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
-		ImageGUI.getInstance().update();
-	}
+        currentRoom = rooms.get(0);
+        ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
+        ImageGUI.getInstance().update();
+    }
+	
+	public static GameEngine getActiveInstance() {
+        return INSTANCE;
+    }
 
+    private void loadAllRooms() {
+        File folder = new File("rooms");
+        File[] files = folder.listFiles();
+        for (File file : files) {
+			if (file.isFile()){
+				Room room = new Room(file.getPath());
+				rooms.add(room);
+			}
+		}
+    }
+	
 	@Override
 	public void update(Observed source) {
 
@@ -51,18 +68,6 @@ public class GameEngine implements Observer {
 		}
 		ImageGUI.getInstance().update();
 		currentRoom.removeItem(currentRoom.getManel().getPosition());
-
-		if (currentRoom.isInterectable(currentRoom.getManel().getPosition())){
-			currentRoomNum++;
-			currentRoom = rooms.get(currentRoomNum);
-			ImageGUI.getInstance().clearImages();
-			ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
-			ImageGUI.getInstance().update();
-		}
-
-
-		//Função a testar a vida do Heroi
-		ImageGUI.getInstance().setStatusMessage("Manel Health: " + currentRoom.getManel().getHealth());
 	}
 
 	private void processTick() {
@@ -71,23 +76,18 @@ public class GameEngine implements Observer {
 
 	}
 
-	private void loadRooms() {
-		File folder = new File("rooms");
-		File[] listOfFiles = folder.listFiles();
-		for (File file : listOfFiles) {
-			if (file.isFile()) {
-				Room room = new Room(file.getPath());
-				rooms.add(room);
-			}
-		}
-	}
-
-	private void changeRoom(Room room) {
-		currentRoom = room;
-		ImageGUI.getInstance().clearImages();
-		ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
-		ImageGUI.getInstance().update();
-	}
+	public void changeRoom(String destinationFile) {
+        for (Room room : rooms) {
+            File roomFile = new File(room.getFileName());
+            if (roomFile.getName().equals(destinationFile)) {
+                currentRoom = room;
+                break;
+            }
+        }
+        ImageGUI.getInstance().clearImages();
+        ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
+        ImageGUI.getInstance().update();
+    }
 
 	private void sortRooms() {
 		rooms.sort((r1, r2) -> r1.getFilename().compareTo(r2.getFilename()));
@@ -100,6 +100,4 @@ public class GameEngine implements Observer {
 	public Room getCurrentRoom() {
 		return currentRoom;
 	}
-
-
 }
