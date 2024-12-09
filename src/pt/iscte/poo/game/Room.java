@@ -4,14 +4,11 @@ import objects.*;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class Room {
 	private Manel manel;
@@ -204,18 +201,31 @@ public class Room {
 		ImageGUI.getInstance().addImage(obj);
 	}
 
-	public void update() {
-		manel.update(this);
-		dk.update(this);
-	}
-	public Manel getManel() {
+    public void update() {
+        manel.update(this);
+        dk.update(this);
+
+        // Create a copy of the gameObjects list
+        List<GameObject> objectsCopy = new ArrayList<>(gameObjects);
+
+        for (GameObject obj : objectsCopy) {
+            if (obj instanceof Banana) {
+                Banana banana = (Banana) obj;
+                banana.fall(this);
+
+                // Check if the banana has fallen off the screen
+                if (banana.getPosition().getY() > 9) {
+                    gameObjects.remove(banana); // Remove from the original list
+                    ImageGUI.getInstance().removeImage(banana); // Remove image
+                }
+            }
+        }
+    }
+
+
+    public Manel getManel() {
 		return this.manel;
 	}
-
-	public DonkeyKong getDonkeyKong() {
-		return this.dk;
-	}
-
 	public List<GameObject> getGameObjects() {
 		return gameObjects;
 	}

@@ -4,13 +4,13 @@ import pt.iscte.poo.game.Room;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
-import pt.iscte.poo.utils.Vector2D;
-
 public abstract class Character extends GameObject implements Interactable {
+    private static final int TRAP_DAMAGE = 50;
+
     private int health;
     private int damage;
 
-    public Character(Point2D position , int layer, int health, int damage) {
+    public Character(Point2D position, int layer, int health, int damage) {
         super(position, layer);
         this.health = health;
         this.damage = damage;
@@ -24,6 +24,18 @@ public abstract class Character extends GameObject implements Interactable {
         return damage;
     }
 
+    public void takeDamage(int amount) {
+        this.health = this.health - amount;
+    }
+
+    public void attack(Character target, Room room) {
+
+        target.setHealth(target.getHealth() - this.getDamage());
+
+        ImageGUI.getInstance().setStatusMessage(
+                target.getName() + " was attacked! Life: " + target.getHealth());
+
+    }
     public void setHealth(int health) {
         this.health = health;
     }
@@ -32,33 +44,26 @@ public abstract class Character extends GameObject implements Interactable {
         this.damage = damage;
     }
 
+    public void checkIfDead(Room room) {
+        if (this.getHealth() <= 0) {
+            ImageGUI.getInstance().setStatusMessage(this.getName() + " has died!");
+            room.getGameObjects().remove(this);
+            ImageGUI.getInstance().removeImage(this);
+        }
+    }
+
     public void move(Direction direction, Room room) {
         Point2D newPosition = getPosition().plus(direction.asVector());
 
-        if (newPosition.getX() < 0 || newPosition.getY() < 0 || newPosition.getX() >= 10 || newPosition.getY() >= 10) {
+        if (newPosition.getX() < 0 || newPosition.getY() < 0 || newPosition.getX() > 9 || newPosition.getY() > 9 ){
             return;
         }
-        
 
-        // Verifica se a posição destino já contém outro Character
         for (GameObject obj : room.getObjectsAt(newPosition)) {
             if (obj instanceof Character) {
                 Character other = (Character) obj;
-
-                // Aplica dano ao outro personagem
-                other.setHealth(other.getHealth() - getDamage());
-
-                // Atualiza mensagem de status
-                ImageGUI.getInstance().setStatusMessage(other.getName() + " was attacked! Life: " + other.getHealth() + "/100");
-
-                // Verifica se o outro personagem morreu
-                if (other.getHealth() <= 0) {
-                    room.getGameObjects().remove(other);
-                    ImageGUI.getInstance().removeImage(other);
-                    ImageGUI.getInstance().setStatusMessage(other.getName() + " killed");
-                }
-
-                return; // Interrompe o movimento para evitar sobreposição
+                this.attack(other, room);
+                return;
             }
         }
 
@@ -82,28 +87,27 @@ public abstract class Character extends GameObject implements Interactable {
         }
     }
 
-
     public void applyGravity(Room room) {
-        Point2D belowPosition = getPosition().plus(new Vector2D(0, 1)); // Position directly below the character
+        Point2D belowPosition = getPosition().plus(Direction.DOWN.asVector());
         if (!room.isCollision(belowPosition) && !room.isClimbable(belowPosition)) {
             setPosition(belowPosition);
         }
     }
 
-    public void isTrap(Room room){
-        Point2D currentPosition = getPosition();
-        if(room.isTrap(currentPosition)){
-            setHealth(getHealth()-50);
+    public void checkForTraps(Room room) {
+        if (room.isTrap(getPosition())) {
+            takeDamage(TRAP_DAMAGE);
+            ImageGUI.getInstance().setStatusMessage(getName() + " triggered a trap! Health: " + getHealth());
         }
     }
 
-
     public void update(Room room) {
         applyGravity(room);
-        isTrap(room);
+        checkForTraps(room);
+        checkIfDead(room);
     }
 
-    public boolean isInteractable(){
+    public boolean isInteractable() {
         return true;
     }
 }

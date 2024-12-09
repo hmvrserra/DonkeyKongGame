@@ -1,24 +1,20 @@
 package pt.iscte.poo.game;
 
-import objects.Manel;
+import objects.DonkeyKong;
+import objects.GameObject;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
 import pt.iscte.poo.utils.Direction;
-import pt.iscte.poo.utils.Point2D;
-import pt.iscte.poo.utils.Vector2D;
-
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GameEngine implements Observer {
 
 	public List<Room> rooms;
 	private Room currentRoom;
-	private int currentRoomNum = 0;
 	private int lastTickProcessed = 0;
 	private static GameEngine INSTANCE;
 	
@@ -61,9 +57,10 @@ public class GameEngine implements Observer {
 		}
 		int t = ImageGUI.getInstance().getTicks();
 		while (lastTickProcessed < t) {
-			Point2D belowPosition = currentRoom.getManel().getPosition().plus(new Vector2D(0, 1));
 			currentRoom.update();
-			currentRoom.getDonkeyKong().throwBanana(currentRoom);
+
+			triggerBananaThrows();
+
 			processTick();
 		}
 		ImageGUI.getInstance().update();
@@ -89,15 +86,22 @@ public class GameEngine implements Observer {
         ImageGUI.getInstance().update();
     }
 
+	private void triggerBananaThrows() {
+		List<GameObject> objectsCopy = new ArrayList<>(currentRoom.getGameObjects());
+
+		for (GameObject obj : objectsCopy) {
+			if (obj instanceof DonkeyKong) {
+				DonkeyKong dk = (DonkeyKong) obj;
+
+				if (new Random().nextInt(5) == 0) { // 5% chance
+					dk.throwBanana(currentRoom);
+				}
+			}
+		}
+	}
+
+
 	private void sortRooms() {
 		rooms.sort((r1, r2) -> r1.getFilename().compareTo(r2.getFilename()));
-	}
-
-	public List<Room> getRooms() {
-		return rooms;
-	}
-
-	public Room getCurrentRoom() {
-		return currentRoom;
 	}
 }

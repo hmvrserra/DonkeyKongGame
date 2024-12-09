@@ -7,9 +7,6 @@ import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Point2D;
 
 public class Manel extends Character {
-	
-	private Point2D position;
-
 	public Manel(Point2D position) {
 		super(position, 2, 100, 20);
 	}
@@ -22,7 +19,6 @@ public class Manel extends Character {
 	@Override
 	public void update(Room room) {
 	    super.update(room);
-
 
 	    List<GameObject> objectsAtPosition = room.getObjectsAt(getPosition());	    
 	    for (GameObject obj : objectsAtPosition) {
@@ -38,6 +34,11 @@ public class Manel extends Character {
 	            ((Door) obj).interact();
 	        }
 	    }
+
+		if (getHealth() <= 0) {
+			ImageGUI.getInstance().setStatusMessage("JumpMan has died!");
+
+		}
 	}
 	
 }
