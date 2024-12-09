@@ -1,6 +1,7 @@
 package pt.iscte.poo.game;
 
 import objects.*;
+import objects.Character;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
@@ -12,7 +13,6 @@ import java.io.IOException;
 
 public class Room {
 	private Manel manel;
-	private DonkeyKong dk;
 	private List<GameObject> gameObjects;
 	Map<java.lang.Character, String> doorDestinations = new HashMap<>();
 	private String fileName;
@@ -116,8 +116,7 @@ public class Room {
             case 't':
                 return new Trap(position);
             case 'G':
-            	dk = new DonkeyKong(position);
-                return dk;
+            	return new DonkeyKong(position);
             case 'b':
                 return new GoodMeat(position);
             case 'm':
@@ -202,18 +201,18 @@ public class Room {
 	}
 
     public void update() {
-        manel.update(this);
-        dk.update(this);
-
-        // Create a copy of the gameObjects list
         List<GameObject> objectsCopy = new ArrayList<>(gameObjects);
 
         for (GameObject obj : objectsCopy) {
+            if (obj instanceof Character){
+                Character character = (Character) obj;
+                character.update(this);
+            }
+            
             if (obj instanceof Banana) {
                 Banana banana = (Banana) obj;
                 banana.fall(this);
 
-                // Check if the banana has fallen off the screen
                 if (banana.getPosition().getY() > 9) {
                     gameObjects.remove(banana); // Remove from the original list
                     ImageGUI.getInstance().removeImage(banana); // Remove image
@@ -255,13 +254,5 @@ public class Room {
             }
         }
         return adjacentObjects;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Room room = (Room) obj;
-        return this.getFileName().equals(room.getFileName());
     }
 }

@@ -18,8 +18,7 @@ public class GameEngine implements Observer {
 	private int lastTickProcessed = 0;
 	private static GameEngine INSTANCE;
 	
-	public GameEngine() {
-    	INSTANCE = this; 
+	private GameEngine() {
         rooms = new ArrayList<>();
         loadAllRooms();
 		sortRooms();
@@ -28,8 +27,11 @@ public class GameEngine implements Observer {
         ImageGUI.getInstance().update();
     }
 	
-	public static GameEngine getActiveInstance() {
-        return INSTANCE;
+	public static GameEngine getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new GameEngine();
+		}
+		return INSTANCE;
     }
 
     private void loadAllRooms() {
@@ -59,7 +61,6 @@ public class GameEngine implements Observer {
 		while (lastTickProcessed < t) {
 			currentRoom.update();
 
-			triggerBananaThrows();
 
 			processTick();
 		}
@@ -85,21 +86,6 @@ public class GameEngine implements Observer {
         ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
         ImageGUI.getInstance().update();
     }
-
-	private void triggerBananaThrows() {
-		List<GameObject> objectsCopy = new ArrayList<>(currentRoom.getGameObjects());
-
-		for (GameObject obj : objectsCopy) {
-			if (obj instanceof DonkeyKong) {
-				DonkeyKong dk = (DonkeyKong) obj;
-
-				if (new Random().nextInt(5) == 0) { // 5% chance
-					dk.throwBanana(currentRoom);
-				}
-			}
-		}
-	}
-
 
 	private void sortRooms() {
 		rooms.sort((r1, r2) -> r1.getFilename().compareTo(r2.getFilename()));

@@ -40,7 +40,7 @@ public class Door extends GameObject {
             ImageGUI.getInstance().setStatusMessage("Door opened!");
         } else {
             String destinationFile = getDestinationFile();
-            GameEngine engine = GameEngine.getActiveInstance();
+            GameEngine engine = GameEngine.getInstance();
             engine.changeRoom(destinationFile);
         }
     }
