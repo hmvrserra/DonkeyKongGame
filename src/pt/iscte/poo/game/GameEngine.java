@@ -1,7 +1,5 @@
 package pt.iscte.poo.game;
 
-import objects.DonkeyKong;
-import objects.GameObject;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
@@ -9,7 +7,6 @@ import pt.iscte.poo.utils.Direction;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class GameEngine implements Observer {
 
@@ -18,8 +15,7 @@ public class GameEngine implements Observer {
 	private int lastTickProcessed = 0;
 	private static GameEngine INSTANCE;
 	
-	public GameEngine() {
-    	INSTANCE = this; 
+	private GameEngine() {
         rooms = new ArrayList<>();
         loadAllRooms();
 		sortRooms();
@@ -28,8 +24,11 @@ public class GameEngine implements Observer {
         ImageGUI.getInstance().update();
     }
 	
-	public static GameEngine getActiveInstance() {
-        return INSTANCE;
+	public static GameEngine getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new GameEngine();
+		}
+		return INSTANCE;
     }
 
     private void loadAllRooms() {
@@ -57,8 +56,8 @@ public class GameEngine implements Observer {
 		}
 		int t = ImageGUI.getInstance().getTicks();
 		while (lastTickProcessed < t) {
-			processTick();
 			currentRoom.update();
+			processTick();
 		}
 		currentRoom.removeItem();
 		ImageGUI.getInstance().update();
