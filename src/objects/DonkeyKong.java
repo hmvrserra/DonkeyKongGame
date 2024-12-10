@@ -11,7 +11,7 @@ public class DonkeyKong extends Character implements Collidable {
 
     private final Random random ;
     public DonkeyKong(Point2D position) {
-        super(position, 2 , 100, 20);
+        super(position, 2 , 50, 5);
         this.random = new Random();
 
     }
@@ -23,10 +23,10 @@ public class DonkeyKong extends Character implements Collidable {
 
     @Override
     public void update(Room room) {
-        super.update(room); // Aplica gravidade e combate
+        super.update(room);
 
         // Gera movimento aleatório
-        int moveChoice = random.nextInt(3); // 0 = left, 1 = right, 2 = stay
+        int moveChoice = random.nextInt(3); // 0 = esquerda, 1 = direita, 2 = ficar
         Direction direction;
         switch (moveChoice) {
             case 0: direction = Direction.LEFT; break;
@@ -34,9 +34,10 @@ public class DonkeyKong extends Character implements Collidable {
             default: return; // Fica parado
         }
 
-        move(direction, room); // Usa o método genérico de movimentação com combate
+        if (random.nextInt(3) == 0) // 33% de probabilidade
+            throwBanana(room);
 
-        throwBanana(room); // DonkeyKong atira bananas
+        move(direction, room);
     }
 
     public void throwBanana(Room room) {

@@ -10,4 +10,7 @@ public abstract class Item extends GameObject implements Collectable {
     public boolean isCollectable() {
         return true;
     }
+
+    public abstract void collect(Character character);
+
 }

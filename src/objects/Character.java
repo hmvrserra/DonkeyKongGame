@@ -5,7 +5,7 @@ import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 public abstract class Character extends GameObject implements Interactable {
-    private static final int TRAP_DAMAGE = 50;
+    private static final int TRAP_DAMAGE = 10;
 
     private int health;
     private int damage;
@@ -24,8 +24,8 @@ public abstract class Character extends GameObject implements Interactable {
         return damage;
     }
 
-    public void takeDamage(int amount) {
-        this.health = this.health - amount;
+    public void takeDamage(int damage) {
+        this.health -= damage;
     }
 
     public void attack(Character target, Room room) {
@@ -36,12 +36,12 @@ public abstract class Character extends GameObject implements Interactable {
                 target.getName() + " was attacked! Life: " + target.getHealth());
 
     }
-    public void setHealth(int health) {
-        this.health = health;
+    public void setHealth(int hp) {
+        this.health = hp;
     }
 
-    public void setDamage(int damage) {
-        this.damage = damage;
+    public void setDamage(int dmg) {
+        this.damage = dmg;
     }
 
     public void checkIfDead(Room room) {
@@ -97,7 +97,7 @@ public abstract class Character extends GameObject implements Interactable {
     public void checkForTraps(Room room) {
         if (room.isTrap(getPosition())) {
             takeDamage(TRAP_DAMAGE);
-            ImageGUI.getInstance().setStatusMessage(getName() + " triggered a trap! Health: " + getHealth());
+            ImageGUI.getInstance().setStatusMessage(getName() + " triggered a trap! Health: " + getHealth() + "/" + room.getManel().getMaxHealth());
         }
     }
 

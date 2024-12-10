@@ -57,20 +57,16 @@ public class GameEngine implements Observer {
 		}
 		int t = ImageGUI.getInstance().getTicks();
 		while (lastTickProcessed < t) {
-			currentRoom.update();
-
-			triggerBananaThrows();
-
 			processTick();
+			currentRoom.update();
 		}
+		currentRoom.removeItem();
 		ImageGUI.getInstance().update();
-		currentRoom.removeItem(currentRoom.getManel().getPosition());
 	}
 
 	private void processTick() {
 		System.out.println("Tic Tac : " + lastTickProcessed);
 		lastTickProcessed++;
-
 	}
 
 	public void changeRoom(String destinationFile) {
@@ -85,21 +81,6 @@ public class GameEngine implements Observer {
         ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
         ImageGUI.getInstance().update();
     }
-
-	private void triggerBananaThrows() {
-		List<GameObject> objectsCopy = new ArrayList<>(currentRoom.getGameObjects());
-
-		for (GameObject obj : objectsCopy) {
-			if (obj instanceof DonkeyKong) {
-				DonkeyKong dk = (DonkeyKong) obj;
-
-				if (new Random().nextInt(5) == 0) { // 5% chance
-					dk.throwBanana(currentRoom);
-				}
-			}
-		}
-	}
-
 
 	private void sortRooms() {
 		rooms.sort((r1, r2) -> r1.getFilename().compareTo(r2.getFilename()));

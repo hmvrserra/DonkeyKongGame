@@ -1,6 +1,7 @@
 package pt.iscte.poo.game;
 
 import objects.*;
+import objects.Character;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
@@ -158,15 +159,6 @@ public class Room {
 		}
 		return false;
 	}
-
-	public boolean isInterectable(Point2D position) {
-		for (GameObject obj : gameObjects) {
-			if (obj instanceof Interactable && obj.getPosition().equals(position)) {
-				return true;
-			}
-		}
-		return false;
-	}
 	public boolean isClimbable(Point2D position) {
 		for (GameObject obj : gameObjects) {
 			if (obj.canClimb() && obj.getPosition().equals(position)) {
@@ -185,12 +177,12 @@ public class Room {
 		return false;
 	}
 
-	public void removeItem(Point2D position) {
+	public void removeItem() {
 		for (GameObject obj : gameObjects) {
-			if (obj instanceof Collectable && obj.getPosition().equals(position)) {
+			if (obj instanceof Item && manel.getPosition().equals(obj.getPosition())) {
+                ((Item) obj).collect(manel);
 				gameObjects.remove(obj);
 				ImageGUI.getInstance().removeImage(obj);
-				ImageGUI.getInstance().setStatusMessage("JumpMan caught the sword! Damage level has increased by 15 and is now " + manel.getDamage());
 				break;
 			}
 		}
@@ -202,13 +194,15 @@ public class Room {
 	}
 
     public void update() {
-        manel.update(this);
-        dk.update(this);
 
-        // Create a copy of the gameObjects list
         List<GameObject> objectsCopy = new ArrayList<>(gameObjects);
 
         for (GameObject obj : objectsCopy) {
+            if (obj instanceof Character) {
+                Character character = (Character) obj;
+                character.update(this);
+            }
+
             if (obj instanceof Banana) {
                 Banana banana = (Banana) obj;
                 banana.fall(this);
@@ -242,19 +236,6 @@ public class Room {
             }
         }
         return objectsAtPosition;
-    }
-    
-    public List<GameObject> getAdjacentObjects(Point2D position) {
-        List<GameObject> adjacentObjects = new ArrayList<>();
-        for (Direction direction : Direction.values()) {
-            Point2D adjacentPosition = position.plus(direction.asVector());
-            for (GameObject obj : gameObjects) {
-                if (obj.getPosition().equals(adjacentPosition)) {
-                    adjacentObjects.add(obj);
-                }
-            }
-        }
-        return adjacentObjects;
     }
     
     @Override

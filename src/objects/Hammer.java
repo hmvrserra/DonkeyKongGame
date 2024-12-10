@@ -11,4 +11,10 @@ public class Hammer extends Item {
     public String getName() {
         return "Hammer";
     }
+
+    @Override
+    public void collect(Character character) {
+        character.setDamage(character.getDamage() + 20);
+        System.out.println(character.getName() + " collected a hammer! Damage increased by 20.");
+    }
 }

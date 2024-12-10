@@ -11,4 +11,10 @@ public class GoodMeat extends Item {
     public String getName() {
         return "GoodMeat";
     }
+
+    @Override
+    public void collect(Character character) {
+        character.setHealth(character.getHealth() + 20);
+        System.out.println(character.getName() + " collected a good meat! Health increased by 20.");
+    }
 }
