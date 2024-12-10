@@ -186,6 +186,18 @@ public class Room {
 		}
 	}
 
+    public void removeBanana(){
+        for (GameObject obj : gameObjects) {
+            if (obj instanceof Banana && manel.getPosition().equals(obj.getPosition())) {
+                getManel().setHealth(getManel().getHealth() - 10);
+                gameObjects.remove(obj);
+                ImageGUI.getInstance().removeImage(obj);
+                ImageGUI.getInstance().setStatusMessage("JumpMan was hit by a banana! Health: " + getManel().getHealth() + "/" + getManel().getMaxHealth());
+                break;
+            }
+        }
+    }
+
 	public void addGameObject(GameObject obj) {
 		gameObjects.add(obj);
 		ImageGUI.getInstance().addImage(obj);

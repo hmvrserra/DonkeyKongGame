@@ -58,9 +58,17 @@ public class GameEngine implements Observer {
 		while (lastTickProcessed < t) {
 			currentRoom.update();
 			processTick();
+			System.out.println("Manel Damage: " + currentRoom.getManel().getDamage());
 		}
+
 		currentRoom.removeItem();
+		currentRoom.removeBanana();
 		ImageGUI.getInstance().update();
+
+		if (currentRoom.getManel().getHealth() <= 0) {
+			ImageGUI.getInstance().showMessage("Game Over", "You died!");
+			System.exit(0);
+		}
 	}
 
 	private void processTick() {

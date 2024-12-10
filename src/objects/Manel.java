@@ -7,14 +7,9 @@ import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Point2D;
 
 public class Manel extends Character {
-	private final int MAX_HEALTH = 50;
 
 	public Manel(Point2D position) {
 		super(position, 2, 50, 5);
-	}
-
-	public int getMaxHealth() {
-		return MAX_HEALTH;
 	}
 	
 	@Override

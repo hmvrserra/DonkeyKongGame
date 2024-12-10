@@ -1,5 +1,6 @@
 package objects;
 
+import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Point2D;
 public class Sword extends Item {
 
@@ -15,6 +16,6 @@ public class Sword extends Item {
     @Override
     public void collect(Character character) {
         character.setDamage(character.getDamage() + 15);
-        System.out.println(character.getName() + " collected a sword! Damage increased by 15.");
+        ImageGUI.getInstance().setStatusMessage(character.getName() + " collected a sword! Damage increased by 15. Damage: " + character.getDamage());
     }
 }

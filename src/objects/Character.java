@@ -6,6 +6,7 @@ import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 public abstract class Character extends GameObject implements Interactable {
     private static final int TRAP_DAMAGE = 10;
+    private static final int MAX_HEALTH = 50;
 
     private int health;
     private int damage;
@@ -18,6 +19,10 @@ public abstract class Character extends GameObject implements Interactable {
 
     public int getHealth() {
         return health;
+    }
+
+    public int getMaxHealth() {
+        return MAX_HEALTH;
     }
 
     public int getDamage() {
@@ -33,7 +38,7 @@ public abstract class Character extends GameObject implements Interactable {
         target.setHealth(target.getHealth() - this.getDamage());
 
         ImageGUI.getInstance().setStatusMessage(
-                target.getName() + " was attacked! Life: " + target.getHealth());
+                target.getName() + " was attacked! Life: " + target.getHealth() + "/" + target.getMaxHealth());
 
     }
     public void setHealth(int hp) {
