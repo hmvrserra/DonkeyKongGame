@@ -23,8 +23,24 @@ public class Room {
         loadRoomFromFile(filename);
     }
 	
-	public String getFileName() {
+	public String getFilename() {
         return this.fileName;
+    }
+
+    public Manel getManel() {
+        return this.manel;
+    }
+    public List<GameObject> getGameObjects() {
+        return gameObjects;
+    }
+    public List<GameObject> getObjectsAt(Point2D position) {
+        List<GameObject> objectsAtPosition = new ArrayList<>();
+        for (GameObject obj : gameObjects) {
+            if (obj.getPosition().equals(position)) {
+                objectsAtPosition.add(obj);
+            }
+        }
+        return objectsAtPosition;
     }
 	
 	private void loadRoomFromFile(String filename) {
@@ -143,7 +159,6 @@ public class Room {
         return !isCollision(position) && !isClimbable(position);
     }
 
-
     public boolean isCollision(Point2D position) {
 		for (GameObject obj : gameObjects) {
 			if (obj instanceof Collidable && obj.getPosition().equals(position)) {
@@ -152,6 +167,7 @@ public class Room {
 		}
 		return false;
 	}
+
 	public boolean isClimbable(Point2D position) {
 		for (GameObject obj : gameObjects) {
 			if (obj instanceof Climbable && obj.getPosition().equals(position)) {
@@ -160,7 +176,7 @@ public class Room {
 		}
 		return false;
 	}
-	public void removeUpdate() {
+	public void instantUpdate() {
 		for (GameObject obj : gameObjects) {
 			if (obj instanceof Item && manel.getPosition().equals(obj.getPosition())) {
                 ((Item) obj).collect(manel);
@@ -239,28 +255,7 @@ public class Room {
 
     private void declareVictory() {
         ImageGUI.getInstance().showMessage("Congratulations! You've won",  "JumpMan saved the Princess!");
-        System.out.println("Victory! JumpMan has saved the Princess!");
         System.exit(0);
     }
 
-    public Manel getManel() {
-		return this.manel;
-	}
-	public List<GameObject> getGameObjects() {
-		return gameObjects;
-	}
-
-	public String getFilename() {
-		return fileName;
-	}
-
-	public List<GameObject> getObjectsAt(Point2D position) {
-        List<GameObject> objectsAtPosition = new ArrayList<>();
-        for (GameObject obj : gameObjects) {
-            if (obj.getPosition().equals(position)) {
-                objectsAtPosition.add(obj);
-            }
-        }
-        return objectsAtPosition;
-    }
 }

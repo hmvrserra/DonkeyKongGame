@@ -64,7 +64,7 @@ public class GameEngine implements Observer {
 			System.out.println("Manel Damage: " + currentRoom.getManel().getDamage());
 		}
 
-		currentRoom.removeUpdate();
+		currentRoom.instantUpdate();
 		ImageGUI.getInstance().update();
 
 		if (currentRoom.getManel().getHealth() <= 0) {
@@ -87,7 +87,7 @@ public class GameEngine implements Observer {
 
 	public void changeRoom(String destinationFile) {
         for (Room room : rooms) {
-            File roomFile = new File(room.getFileName());
+            File roomFile = new File(room.getFilename());
             if (roomFile.getName().equals(destinationFile)) {
                 currentRoom = room;
                 break;
