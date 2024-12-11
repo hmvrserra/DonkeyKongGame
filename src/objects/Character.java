@@ -43,8 +43,8 @@ public abstract class Character extends GameObject implements Collidable {
                 target.getName() + " was attacked! Life: " + target.getHealth() + "/" + target.getMaxHealth());
 
     }
-    public void setHealth(int hp) {
-        this.health = hp;
+    public void setHealth(int health) {
+        this.health = Math.min(health, MAX_HEALTH); // Ensure health stays within the maximum limit
     }
 
     public void setDamage(int dmg) {
