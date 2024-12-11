@@ -4,6 +4,8 @@ import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
 import pt.iscte.poo.utils.Direction;
+
+import javax.print.attribute.standard.PresentationDirection;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ public class GameEngine implements Observer {
 	private Room currentRoom;
 	private int lastTickProcessed = 0;
 	private static GameEngine INSTANCE;
+	private int NUM_LIVES = 3;
 	
 	private GameEngine() {
         rooms = new ArrayList<>();
@@ -61,13 +64,19 @@ public class GameEngine implements Observer {
 			System.out.println("Manel Damage: " + currentRoom.getManel().getDamage());
 		}
 
-		currentRoom.removeItem();
-		currentRoom.removeBanana();
+		currentRoom.removeUpdate();
 		ImageGUI.getInstance().update();
 
 		if (currentRoom.getManel().getHealth() <= 0) {
-			ImageGUI.getInstance().showMessage("Game Over", "You died!");
-			System.exit(0);
+			NUM_LIVES--;
+			if (NUM_LIVES > 0) {
+				ImageGUI.getInstance().setStatusMessage("You died! Lives left:" + NUM_LIVES);
+				currentRoom.reset();
+			}
+			if (NUM_LIVES <= 0) {
+				ImageGUI.getInstance().showMessage("Game Over", "You have no lives left!");
+				System.exit(0);
+			}
 		}
 	}
 

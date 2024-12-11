@@ -105,29 +105,19 @@ public class Room {
         }
 
         switch (symbol) {
-            case 'W':
-                return new Wall(position);
-            case ' ':
-                return new Floor(position);
-            case 'S':
-                return new Stairs(position);
-            case 's':
-                return new Sword(position);
-            case 't':
-                return new Trap(position);
-            case 'G':
-            	return new DonkeyKong(position);
-            case 'b':
-                return new GoodMeat(position);
-            case 'm':
-                return new Hammer(position);
-            case 'P':
-                return new Princess(position);
+            case 'W': return new Wall(position);
+            case ' ': return new Floor(position);
+            case 'S': return new Stairs(position);
+            case 's': return new Sword(position);
+            case 't': return new Trap(position);
+            case 'G': return new DonkeyKong(position);
+            case 'b': return new GoodMeat(position);
+            case 'm': return new Hammer(position);
+            case 'P': return new Princess(position);
             case 'H':
                 manel = new Manel(position);
                 return manel;
-            default:
-                return null;
+            default: return null;
         }
     }
 
@@ -175,33 +165,41 @@ public class Room {
 		return false;
 	}
 
-	public void removeItem() {
+	public void removeUpdate() {
 		for (GameObject obj : gameObjects) {
 			if (obj instanceof Item && manel.getPosition().equals(obj.getPosition())) {
                 ((Item) obj).collect(manel);
 				gameObjects.remove(obj);
 				ImageGUI.getInstance().removeImage(obj);
 				break;
-			}
-		}
-	}
-
-    public void removeBanana(){
-        for (GameObject obj : gameObjects) {
-            if (obj instanceof Banana && manel.getPosition().equals(obj.getPosition())) {
+			}else if (obj instanceof Banana && manel.getPosition().equals(obj.getPosition())) {
                 getManel().setHealth(getManel().getHealth() - 10);
                 gameObjects.remove(obj);
                 ImageGUI.getInstance().removeImage(obj);
                 ImageGUI.getInstance().setStatusMessage("JumpMan was hit by a banana! Health: " + getManel().getHealth() + "/" + getManel().getMaxHealth());
                 break;
+            }else if (obj instanceof Character) {
+                Character character = (Character) obj;
+                if (character.isDead()){
+                    gameObjects.remove(obj);
+                    ImageGUI.getInstance().removeImage(obj);
+                    break;
+                }
             }
-        }
-    }
+		}
+	}
 
 	public void addGameObject(GameObject obj) {
 		gameObjects.add(obj);
 		ImageGUI.getInstance().addImage(obj);
 	}
+
+    public void reset() {
+        gameObjects.clear();
+        loadRoomFromFile(fileName);
+        ImageGUI.getInstance().clearImages();
+        ImageGUI.getInstance().addImages(gameObjects);
+    }
 
     public void update() {
 
@@ -215,7 +213,7 @@ public class Room {
 
             if (obj instanceof Banana) {
                 Banana banana = (Banana) obj;
-                banana.fall(this);
+                banana.fall();
 
                 if (banana.getPosition().getY() > 9) {
                     gameObjects.remove(banana); // Remove from the original list

@@ -4,8 +4,9 @@ import pt.iscte.poo.game.Room;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
+
 public abstract class Character extends GameObject implements Interactable {
-    private static final int TRAP_DAMAGE = 10;
+    private static final int TRAP_DAMAGE = 20;
     private static final int MAX_HEALTH = 50;
 
     private int health;
@@ -33,7 +34,7 @@ public abstract class Character extends GameObject implements Interactable {
         this.health -= damage;
     }
 
-    public void attack(Character target, Room room) {
+    public void attack(Character target) {
 
         target.setHealth(target.getHealth() - this.getDamage());
 
@@ -49,12 +50,11 @@ public abstract class Character extends GameObject implements Interactable {
         this.damage = dmg;
     }
 
-    public void checkIfDead(Room room) {
+    public boolean isDead() {
         if (this.getHealth() <= 0) {
-            ImageGUI.getInstance().setStatusMessage(this.getName() + " has died!");
-            room.getGameObjects().remove(this);
-            ImageGUI.getInstance().removeImage(this);
+            return true;
         }
+        return false;
     }
 
     public void move(Direction direction, Room room) {
@@ -67,7 +67,7 @@ public abstract class Character extends GameObject implements Interactable {
         for (GameObject obj : room.getObjectsAt(newPosition)) {
             if (obj instanceof Character) {
                 Character other = (Character) obj;
-                this.attack(other, room);
+                this.attack(other);
                 return;
             }
         }
@@ -109,7 +109,6 @@ public abstract class Character extends GameObject implements Interactable {
     public void update(Room room) {
         applyGravity(room);
         checkForTraps(room);
-        checkIfDead(room);
     }
 
     public boolean isInteractable() {

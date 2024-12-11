@@ -19,7 +19,7 @@ public class Banana extends GameObject {
         return "Banana";
     }
 
-    public void fall(Room room) {
+    public void fall() {
         Point2D newPosition = currentPosition.plus(new Vector2D(0, 1));
 
         setPosition(newPosition);

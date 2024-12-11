@@ -3,7 +3,6 @@ package objects;
 import java.util.List;
 
 import pt.iscte.poo.game.Room;
-import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Point2D;
 
 public class Manel extends Character {
@@ -27,10 +26,6 @@ public class Manel extends Character {
 	            ((Door) obj).interact();
 	        }
 	    }
-
-		if (getHealth() <= 0) {
-			ImageGUI.getInstance().setStatusMessage("JumpMan has died!");
-		}
 	}
 	
 }
