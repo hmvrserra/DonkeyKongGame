@@ -12,4 +12,6 @@ public class Wall extends GameObject implements Collidable{
     public String getName() {
         return "Wall";
     }
+
+
 }

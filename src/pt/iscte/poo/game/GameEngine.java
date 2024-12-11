@@ -54,7 +54,7 @@ public class GameEngine implements Observer {
 			if (Direction.isDirection(k)) {
 				Direction moveDirection = Direction.directionFor(k);
 				System.out.println("User wants to move: " + moveDirection);
-				currentRoom.moveManel(moveDirection, currentRoom);
+				currentRoom.moveManel(moveDirection);
 			}
 		}
 		int t = ImageGUI.getInstance().getTicks();
@@ -97,6 +97,10 @@ public class GameEngine implements Observer {
         ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
         ImageGUI.getInstance().update();
     }
+
+	public Room getCurrentRoom() {
+		return currentRoom;
+	}
 
 	private void sortRooms() {
 		rooms.sort((r1, r2) -> r1.getFilename().compareTo(r2.getFilename()));

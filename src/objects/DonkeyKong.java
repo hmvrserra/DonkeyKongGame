@@ -1,5 +1,6 @@
 package objects;
 
+import pt.iscte.poo.game.GameEngine;
 import pt.iscte.poo.game.Room;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
@@ -7,7 +8,7 @@ import pt.iscte.poo.utils.Vector2D;
 
 import java.util.Random;
 
-public class DonkeyKong extends Character implements Collidable {
+public class DonkeyKong extends Character {
 
     private final Random random ;
     public DonkeyKong(Point2D position) {
@@ -22,8 +23,10 @@ public class DonkeyKong extends Character implements Collidable {
     }
 
     @Override
-    public void update(Room room) {
-        super.update(room);
+    public void update() {
+        Room room = GameEngine.getInstance().getCurrentRoom();
+
+        super.update();
 
         // Gera movimento aleatório
         int moveChoice = random.nextInt(3); // 0 = esquerda, 1 = direita, 2 = ficar
@@ -35,12 +38,13 @@ public class DonkeyKong extends Character implements Collidable {
         }
 
         if (random.nextInt(3) == 0) // 33% de probabilidade
-            throwBanana(room);
+            throwBanana();
 
-        move(direction, room);
+        move(direction);
     }
 
-    public void throwBanana(Room room) {
+    public void throwBanana() {
+        Room room = GameEngine.getInstance().getCurrentRoom();
         Point2D bananaPosition = getPosition().plus(new Vector2D(0, 1));
         Banana banana = new Banana(bananaPosition); // Banana moves right
         room.addGameObject(banana); // Add banana to the room

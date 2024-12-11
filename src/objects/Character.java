@@ -1,11 +1,12 @@
 package objects;
 
+import pt.iscte.poo.game.GameEngine;
 import pt.iscte.poo.game.Room;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 
-public abstract class Character extends GameObject implements Interactable {
+public abstract class Character extends GameObject implements Collidable {
     private static final int TRAP_DAMAGE = 20;
     private static final int MAX_HEALTH = 50;
 
@@ -36,7 +37,7 @@ public abstract class Character extends GameObject implements Interactable {
 
     public void attack(Character target) {
 
-        target.setHealth(target.getHealth() - this.getDamage());
+        target.takeDamage(this.getDamage());
 
         ImageGUI.getInstance().setStatusMessage(
                 target.getName() + " was attacked! Life: " + target.getHealth() + "/" + target.getMaxHealth());
@@ -57,7 +58,9 @@ public abstract class Character extends GameObject implements Interactable {
         return false;
     }
 
-    public void move(Direction direction, Room room) {
+    public void move(Direction direction) {
+        Room room = GameEngine.getInstance().getCurrentRoom();
+
         Point2D newPosition = getPosition().plus(direction.asVector());
 
         if (newPosition.getX() < 0 || newPosition.getY() < 0 || newPosition.getX() > 9 || newPosition.getY() > 9 ){
@@ -92,26 +95,28 @@ public abstract class Character extends GameObject implements Interactable {
         }
     }
 
-    public void applyGravity(Room room) {
+    public void applyGravity() {
+        Room room = GameEngine.getInstance().getCurrentRoom();
         Point2D belowPosition = getPosition().plus(Direction.DOWN.asVector());
-        if (!room.isCollision(belowPosition) && !room.isClimbable(belowPosition)) {
+        if (room.canMoveTo(belowPosition)) {
             setPosition(belowPosition);
         }
     }
 
-    public void checkForTraps(Room room) {
-        if (room.isTrap(getPosition())) {
-            takeDamage(TRAP_DAMAGE);
-            ImageGUI.getInstance().setStatusMessage(getName() + " triggered a trap! Health: " + getHealth() + "/" + room.getManel().getMaxHealth());
+    public void checkForTraps() {
+        Room room = GameEngine.getInstance().getCurrentRoom();
+        for (GameObject obj : room.getObjectsAt(getPosition())) {
+            if (obj instanceof Trap) {
+                takeDamage(TRAP_DAMAGE);
+                ImageGUI.getInstance().setStatusMessage(
+                        getName() + " was hit by a trap! Life: " + getHealth() + "/" + getMaxHealth());
+                break;
+            }
         }
     }
 
-    public void update(Room room) {
-        applyGravity(room);
-        checkForTraps(room);
-    }
-
-    public boolean isInteractable() {
-        return true;
+    public void update() {
+        applyGravity();
+        checkForTraps();
     }
 }

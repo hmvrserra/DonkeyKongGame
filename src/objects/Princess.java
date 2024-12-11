@@ -2,7 +2,7 @@ package objects;
 
 import pt.iscte.poo.utils.Point2D;
 
-public class Princess extends GameObject implements Collidable{
+public class Princess extends GameObject {
 
 	public Princess(Point2D position) {
 		super(position, 1);
@@ -12,4 +12,5 @@ public class Princess extends GameObject implements Collidable{
     public String getName() {
         return "Princess";
     }
+
 }

@@ -127,8 +127,8 @@ public class Room {
 		System.exit(1);
 	}
 	
-	public void moveManel(Direction direction, Room room) {
-		manel.move(direction, room);
+	public void moveManel(Direction direction) {
+		manel.move(direction);
 	}
 
 	public void addBackground() {
@@ -139,7 +139,12 @@ public class Room {
 		}
 	}
 
-	public boolean isCollision(Point2D position) {
+    public boolean canMoveTo(Point2D position) {
+        return !isCollision(position) && !isClimbable(position);
+    }
+
+
+    public boolean isCollision(Point2D position) {
 		for (GameObject obj : gameObjects) {
 			if (obj instanceof Collidable && obj.getPosition().equals(position)) {
 				return true;
@@ -149,22 +154,12 @@ public class Room {
 	}
 	public boolean isClimbable(Point2D position) {
 		for (GameObject obj : gameObjects) {
-			if (obj.canClimb() && obj.getPosition().equals(position)) {
+			if (obj instanceof Climbable && obj.getPosition().equals(position)) {
 				return true;
 			}
 		}
 		return false;
 	}
-
-	public boolean isTrap(Point2D position) {
-		for (GameObject obj : gameObjects) {
-			if (obj instanceof Trap && obj.getPosition().equals(position)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public void removeUpdate() {
 		for (GameObject obj : gameObjects) {
 			if (obj instanceof Item && manel.getPosition().equals(obj.getPosition())) {
@@ -194,35 +189,59 @@ public class Room {
 		ImageGUI.getInstance().addImage(obj);
 	}
 
+    private void removeGameObject(GameObject obj) {
+        gameObjects.remove(obj);
+        ImageGUI.getInstance().removeImage(obj);
+    }
+
     public void reset() {
         gameObjects.clear();
         loadRoomFromFile(fileName);
         ImageGUI.getInstance().clearImages();
         ImageGUI.getInstance().addImages(gameObjects);
     }
-
     public void update() {
+        updateCharacters();
+        updateBananas();
+        checkVictory();
+    }
 
-        List<GameObject> objectsCopy = new ArrayList<>(gameObjects);
-
-        for (GameObject obj : objectsCopy) {
-            if (obj instanceof Character){
-                Character character = (Character) obj;
-                character.update(this);
-            }
-
-            if (obj instanceof Banana) {
-                Banana banana = (Banana) obj;
-                banana.fall();
-
-                if (banana.getPosition().getY() > 9) {
-                    gameObjects.remove(banana); // Remove from the original list
-                    ImageGUI.getInstance().removeImage(banana); // Remove image
+    private void updateCharacters() {
+        for (GameObject obj : new ArrayList<>(gameObjects)) {
+            if (obj instanceof Character) {
+                ((Character) obj).update();
+                if (((Character) obj).isDead()) {
+                    removeGameObject(obj);
                 }
             }
         }
     }
 
+    private void updateBananas() {
+        for (GameObject obj : new ArrayList<>(gameObjects)) {
+            if (obj instanceof Banana) {
+                Banana banana = (Banana) obj;
+                banana.fall();
+                if (banana.getPosition().getY() > 9) {
+                    removeGameObject(banana);
+                }
+            }
+        }
+    }
+
+    private void checkVictory() {
+        for (GameObject obj : gameObjects) {
+            if (obj instanceof Princess && manel.getPosition().equals(obj.getPosition())) {
+                declareVictory();
+            }
+        }
+    }
+
+    private void declareVictory() {
+        ImageGUI.getInstance().showMessage("Congratulations! You've won",  "JumpMan saved the Princess!");
+        System.out.println("Victory! JumpMan has saved the Princess!");
+        System.exit(0);
+    }
 
     public Manel getManel() {
 		return this.manel;

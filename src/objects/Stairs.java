@@ -1,7 +1,7 @@
 package objects;
 
 import pt.iscte.poo.utils.Point2D;
-public class Stairs extends GameObject{
+public class Stairs extends GameObject implements Climbable {
     public Stairs(Point2D position) {
         super(position, 0);
     }
