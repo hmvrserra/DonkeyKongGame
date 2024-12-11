@@ -47,7 +47,7 @@ public class GameEngine implements Observer {
 	
 	@Override
 	public void update(Observed source) {
-
+		
 		if (ImageGUI.getInstance().wasKeyPressed()) {
 			int k = ImageGUI.getInstance().keyPressed();
 			System.out.println("Keypressed " + k);
@@ -57,8 +57,15 @@ public class GameEngine implements Observer {
 				currentRoom.moveManel(moveDirection);
 			}
 		}
+		
 		int t = ImageGUI.getInstance().getTicks();
+		int lastMeatUpdateTick = 0;
+		
 		while (lastTickProcessed < t) {
+			if (lastTickProcessed - lastMeatUpdateTick >= 15) {
+				currentRoom.updateMeat();
+				lastMeatUpdateTick = lastTickProcessed;
+			}
 			currentRoom.update();
 			processTick();
 			System.out.println("Manel Damage: " + currentRoom.getManel().getDamage());

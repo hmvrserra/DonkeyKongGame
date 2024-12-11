@@ -127,7 +127,7 @@ public class Room {
             case 's': return new Sword(position);
             case 't': return new Trap(position);
             case 'G': return new DonkeyKong(position);
-            case 'b': return new GoodMeat(position);
+            case 'b': return new Meat(position);
             case 'm': return new Hammer(position);
             case 'P': return new Princess(position);
             case 'H':
@@ -241,6 +241,17 @@ public class Room {
                 if (banana.getPosition().getY() > 9) {
                     removeGameObject(banana);
                 }
+            }
+        }
+    }
+
+    public void updateMeat() {
+        for (GameObject obj : new ArrayList<>(gameObjects)) {
+            if (obj instanceof Meat) {
+                Meat meat = (Meat) obj;
+                meat.setRotten();
+                ImageGUI.getInstance().removeImage(meat);
+                ImageGUI.getInstance().addImage(meat);
             }
         }
     }
