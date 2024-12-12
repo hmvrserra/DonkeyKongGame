@@ -127,7 +127,9 @@ public class Room {
             case 's': return new Sword(position);
             case 't': return new Trap(position);
             case 'G': return new DonkeyKong(position);
-            case 'b': return new Meat(position);
+            case 'M': return new Meat(position);
+            case 'b': return new Bomb(position);
+            case 'B': return new Bat(position);
             case 'm': return new Hammer(position);
             case 'P': return new Princess(position);
             case 'H':
@@ -205,7 +207,7 @@ public class Room {
 		ImageGUI.getInstance().addImage(obj);
 	}
 
-    private void removeGameObject(GameObject obj) {
+    public void removeGameObject(GameObject obj) {
         gameObjects.remove(obj);
         ImageGUI.getInstance().removeImage(obj);
     }
@@ -232,6 +234,14 @@ public class Room {
             }
         }
     }
+    
+    public void updateFire() {
+        for (GameObject obj : new ArrayList<>(gameObjects)) {
+            if (obj instanceof FireOld) {
+                removeGameObject(obj);
+            }
+        }
+    }
 
     private void updateBananas() {
         for (GameObject obj : new ArrayList<>(gameObjects)) {
@@ -241,6 +251,16 @@ public class Room {
                 if (banana.getPosition().getY() > 9) {
                     removeGameObject(banana);
                 }
+            }
+        }
+    }
+    
+    public void updateBomb(){
+        for (GameObject obj : new ArrayList<>(gameObjects)) {
+            if (obj instanceof ExplodingBomb) {
+                ExplodingBomb bomb = (ExplodingBomb) obj;
+                bomb.explode();
+                removeGameObject(bomb);
             }
         }
     }

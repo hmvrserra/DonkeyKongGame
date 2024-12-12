@@ -119,4 +119,9 @@ public abstract class Character extends GameObject implements Collidable {
         applyGravity();
         checkForTraps();
     }
+    
+    @Override
+    public boolean canCollide() {
+        return true;
+    }
 }

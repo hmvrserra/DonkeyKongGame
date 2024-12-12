@@ -1,5 +1,7 @@
 package pt.iscte.poo.game;
 
+import objects.FireOld;
+import objects.GameObject;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
@@ -59,12 +61,26 @@ public class GameEngine implements Observer {
 		}
 		
 		int t = ImageGUI.getInstance().getTicks();
-		int lastMeatUpdateTick = 0;
+		int lastMeatTick = 0;
+		int lastBombTick = 0;
+		int lastFireTick = 0;
 		
 		while (lastTickProcessed < t) {
-			if (lastTickProcessed - lastMeatUpdateTick >= 15) {
+			int kb = ImageGUI.getInstance().keyPressed();
+			if (lastTickProcessed - lastMeatTick >= 15) {
 				currentRoom.updateMeat();
-				lastMeatUpdateTick = lastTickProcessed;
+				lastMeatTick = lastTickProcessed;
+			}
+			if (kb == 66) {
+				currentRoom.getManel().throwBomb();
+			}
+			if (lastTickProcessed - lastBombTick >= 10) {
+				currentRoom.updateBomb();
+				lastBombTick = lastTickProcessed;
+			}
+			if (lastTickProcessed - lastFireTick >= 12) {
+				currentRoom.updateFire();
+				lastFireTick = lastTickProcessed;
 			}
 			currentRoom.update();
 			processTick();

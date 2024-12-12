@@ -4,12 +4,15 @@ import java.util.List;
 
 import pt.iscte.poo.game.GameEngine;
 import pt.iscte.poo.game.Room;
+import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Point2D;
 
 public class Manel extends Character{
+	
+	private int bombNum = 0;
 
 	public Manel(Point2D position) {
-		super(position, 2, 50, 5);
+		super(position, 3, 50, 5);
 	}
 	
 	@Override
@@ -20,6 +23,8 @@ public class Manel extends Character{
 	@Override
 	public void update() {
 	    super.update();
+		
+		throwBomb();
 
 		Room room = GameEngine.getInstance().getCurrentRoom();
 
@@ -29,5 +34,25 @@ public class Manel extends Character{
 	            ((Door) obj).interact();
 	        }
 	    }
+	}
+	
+	public void collectBomb(){
+		bombNum++;
+	}
+
+	public void useBomb(){
+		bombNum--;
+	}
+	
+	public void throwBomb(){
+		GameEngine gameEngine = GameEngine.getInstance();
+		Room room = GameEngine.getInstance().getCurrentRoom();
+		int k = ImageGUI.getInstance().keyPressed();
+		
+		if (k == 66 && bombNum > 0) {
+			ExplodingBomb b = new ExplodingBomb(getPosition());
+			room.addGameObject(b);
+			useBomb();
+		}
 	}
 }

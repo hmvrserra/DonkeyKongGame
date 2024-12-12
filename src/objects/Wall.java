@@ -12,6 +12,9 @@ public class Wall extends GameObject implements Collidable{
     public String getName() {
         return "Wall";
     }
-
-
+	
+	@Override
+	public boolean canCollide() {
+		return true;
+	}
 }
