@@ -10,7 +10,7 @@ import pt.iscte.poo.utils.Point2D;
 public class Manel extends Character{
 	
 	private int bombNum = 0;
-
+	
 	public Manel(Point2D position) {
 		super(position, 3, 50, 5);
 	}
@@ -23,8 +23,6 @@ public class Manel extends Character{
 	@Override
 	public void update() {
 	    super.update();
-		
-		throwBomb();
 
 		Room room = GameEngine.getInstance().getCurrentRoom();
 
@@ -34,6 +32,9 @@ public class Manel extends Character{
 	            ((Door) obj).interact();
 	        }
 	    }
+	}
+	public boolean hasBombs(){
+		return bombNum > 0;
 	}
 	
 	public void collectBomb(){
@@ -49,9 +50,10 @@ public class Manel extends Character{
 		Room room = GameEngine.getInstance().getCurrentRoom();
 		int k = ImageGUI.getInstance().keyPressed();
 		
-		if (k == 66 && bombNum > 0) {
+		if (hasBombs()) {
 			ExplodingBomb b = new ExplodingBomb(getPosition());
 			room.addGameObject(b);
+			room.setBombThrown(true);
 			useBomb();
 		}
 	}

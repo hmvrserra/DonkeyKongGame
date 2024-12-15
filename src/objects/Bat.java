@@ -18,6 +18,11 @@ public class Bat extends Character{
     }
     
     @Override
+    public int getMaxHealth() {
+        return 1;
+    }
+    
+    @Override
     public void update() {
         Room room = GameEngine.getInstance().getCurrentRoom();
         
@@ -41,8 +46,13 @@ public class Bat extends Character{
     @Override
     public void attack(Character target) {
         super.attack(target);
-        takeDamage(1);
+        setHealth(0);
     }
+    
+    @Override
+    public void takeDamage(int damage) {
+    }
+    
     
     @Override
     public void checkForTraps(){}

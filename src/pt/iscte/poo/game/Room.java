@@ -16,8 +16,9 @@ public class Room {
 	private List<GameObject> gameObjects;
 	Map<java.lang.Character, String> doorDestinations = new HashMap<>();
 	private String fileName;
-	
-	public Room(String filename) {
+    private boolean bombThrown = false;
+
+    public Room(String filename) {
 		this.fileName = filename;
 		this.gameObjects = new ArrayList<>();
         loadRoomFromFile(filename);
@@ -239,6 +240,7 @@ public class Room {
         for (GameObject obj : new ArrayList<>(gameObjects)) {
             if (obj instanceof FireOld) {
                 removeGameObject(obj);
+                setBombThrown(false);
             }
         }
     }
@@ -276,17 +278,21 @@ public class Room {
         }
     }
 
-    private void checkVictory() {
-        for (GameObject obj : gameObjects) {
-            if (obj instanceof Princess && manel.getPosition().equals(obj.getPosition())) {
-                declareVictory();
-            }
-        }
+    public boolean isBombThrown(){
+        return bombThrown;
     }
 
-    private void declareVictory() {
-        ImageGUI.getInstance().showMessage("Congratulations! You've won",  "JumpMan saved the Princess!");
-        System.exit(0);
+    public void setBombThrown(boolean b){
+        bombThrown = b;
+    }
+
+    public boolean checkVictory() {
+        for (GameObject obj : gameObjects) {
+            if (obj instanceof Princess && manel.getPosition().equals(obj.getPosition())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

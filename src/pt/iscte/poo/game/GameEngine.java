@@ -1,13 +1,10 @@
 package pt.iscte.poo.game;
 
-import objects.FireOld;
-import objects.GameObject;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
 import pt.iscte.poo.utils.Direction;
 
-import javax.print.attribute.standard.PresentationDirection;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +16,10 @@ public class GameEngine implements Observer {
 	private int lastTickProcessed = 0;
 	private static GameEngine INSTANCE;
 	private int NUM_LIVES = 3;
+	
+	private int lastMeatTick = 0;
+	private int lastBombTick = 0;
+	private int lastFireTick = 0;
 	
 	private GameEngine() {
         rooms = new ArrayList<>();
@@ -61,9 +62,6 @@ public class GameEngine implements Observer {
 		}
 		
 		int t = ImageGUI.getInstance().getTicks();
-		int lastMeatTick = 0;
-		int lastBombTick = 0;
-		int lastFireTick = 0;
 		
 		while (lastTickProcessed < t) {
 			int kb = ImageGUI.getInstance().keyPressed();
@@ -74,17 +72,16 @@ public class GameEngine implements Observer {
 			if (kb == 66) {
 				currentRoom.getManel().throwBomb();
 			}
-			if (lastTickProcessed - lastBombTick >= 10) {
+			if (lastBombTick >= 15) {
 				currentRoom.updateBomb();
-				lastBombTick = lastTickProcessed;
+				lastBombTick = 0;
 			}
-			if (lastTickProcessed - lastFireTick >= 12) {
+			if (lastFireTick >= 16) {
 				currentRoom.updateFire();
-				lastFireTick = lastTickProcessed;
+				lastFireTick = 0;
 			}
 			currentRoom.update();
 			processTick();
-			System.out.println("Manel Damage: " + currentRoom.getManel().getDamage());
 		}
 
 		currentRoom.instantUpdate();
@@ -94,18 +91,35 @@ public class GameEngine implements Observer {
 			NUM_LIVES--;
 			if (NUM_LIVES > 0) {
 				ImageGUI.getInstance().setStatusMessage("You died! Lives left:" + NUM_LIVES);
-				currentRoom.reset();
+				resetRoomState();
 			}
 			if (NUM_LIVES <= 0) {
 				ImageGUI.getInstance().showMessage("Game Over", "You have no lives left!");
 				System.exit(0);
 			}
 		}
+		
+		if (currentRoom.checkVictory()) {
+			ImageGUI.getInstance().showMessage("Congratulations!", "You have won the game!");
+			System.exit(0);
+		}
 	}
+
+	private void resetRoomState() {
+		lastMeatTick = 0;
+		lastBombTick = 0;
+		lastTickProcessed = ImageGUI.getInstance().getTicks();
+		currentRoom.reset();
+	}
+
 
 	private void processTick() {
 		System.out.println("Tic Tac : " + lastTickProcessed);
 		lastTickProcessed++;
+		if (currentRoom.isBombThrown()){
+			lastBombTick++;
+			lastFireTick++;
+		}
 	}
 
 	public void changeRoom(String destinationFile) {

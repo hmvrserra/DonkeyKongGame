@@ -29,12 +29,16 @@ public class ExplodingBomb extends GameObject {
                 Point2D newPosition = position.plus(v);
                 for (GameObject obj : room.getObjectsAt(newPosition)) {
                     room.addGameObject(new FireOld(newPosition));
-                    if (obj instanceof Item || obj instanceof Character) {
-                        room.getManel().takeDamage(room.getManel().getMaxHealth());
-                        break;
+                    if (obj instanceof Item) {
+                        room.removeGameObject(obj);
+                    }
+                    if (obj instanceof Character) {
+                        Character character = (Character) obj;
+                        character.takeDamage(character.getMaxHealth());
                     }
                 }
             }
         }
+        room.removeGameObject(this);
     }
 }

@@ -8,7 +8,7 @@ import pt.iscte.poo.utils.Point2D;
 
 public abstract class Character extends GameObject implements Collidable {
     private static final int TRAP_DAMAGE = 20;
-    private static final int MAX_HEALTH = 50;
+    private static int MAX_HEALTH = 50;
 
     private int health;
     private int damage;
