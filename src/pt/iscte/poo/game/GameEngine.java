@@ -5,9 +5,11 @@ import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
 import pt.iscte.poo.utils.Direction;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 public class GameEngine implements Observer {
 
@@ -16,6 +18,7 @@ public class GameEngine implements Observer {
 	private int lastTickProcessed = 0;
 	private static GameEngine INSTANCE;
 	private int NUM_LIVES = 3;
+	private long startTime;
 	
 	private int lastMeatTick = 0;
 	private int lastBombTick = 0;
@@ -28,6 +31,8 @@ public class GameEngine implements Observer {
         currentRoom = rooms.get(0);
         ImageGUI.getInstance().addImages(currentRoom.getGameObjects());
         ImageGUI.getInstance().update();
+		
+		startTime = System.currentTimeMillis();
     }
 	
 	public static GameEngine getInstance() {
@@ -74,10 +79,10 @@ public class GameEngine implements Observer {
 			}
 			if (lastBombTick >= 15) {
 				currentRoom.updateBomb();
-				lastBombTick = 0;
 			}
 			if (lastFireTick >= 16) {
 				currentRoom.updateFire();
+				lastBombTick = 0;
 				lastFireTick = 0;
 			}
 			currentRoom.update();
@@ -100,14 +105,68 @@ public class GameEngine implements Observer {
 		}
 		
 		if (currentRoom.checkVictory()) {
+			long completionTimeMillis = System.currentTimeMillis() - startTime;
+			saveToLeaderboard(completionTimeMillis);
 			ImageGUI.getInstance().showMessage("Congratulations!", "You have won the game!");
+			displayLeaderboard();
 			System.exit(0);
 		}
+	}
+
+	private void saveToLeaderboard(long completionTimeMillis) {
+		try {
+			FileWriter writer = new FileWriter("leaderboard/leaderboard.txt", true);
+			writer.write(completionTimeMillis + "\n");
+			writer.close();
+		} catch (IOException e) {
+			System.err.println("Error writing to leaderboard: " + e.getMessage());
+		}
+	}
+
+	private void displayLeaderboard() {
+		StringBuilder leaderboardMessage = new StringBuilder("Leaderboard:\n");
+		try {
+			File file = new File("leaderboard/leaderboard.txt");
+			Scanner scanner = new Scanner(file);
+
+			List<Long> times = new ArrayList<>();
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				try {
+					times.add(Long.parseLong(line));
+				} catch (NumberFormatException e) {
+					System.err.println("Invalid leaderboard entry: " + line);
+				}
+			}
+			scanner.close();
+
+			Collections.sort(times);
+			for (int i = 0; i < Math.min(times.size(), 10); i++) {
+				leaderboardMessage.append((i + 1)).append(". ").append(formatTime(times.get(i))).append("\n");
+			}
+
+			if (times.isEmpty()) {
+				leaderboardMessage.append("No scores yet!");
+			}
+
+		} catch (FileNotFoundException e) {
+			leaderboardMessage.append("Leaderboard file not found.");
+		}
+
+		ImageGUI.getInstance().showMessage("Leaderboard", leaderboardMessage.toString());
+	}
+
+	private String formatTime(long millis) {
+		long seconds = millis / 1000;
+		long minutes = seconds / 60;
+		seconds = seconds % 60;
+		return String.format(minutes + " min " + seconds + " sec");
 	}
 
 	private void resetRoomState() {
 		lastMeatTick = 0;
 		lastBombTick = 0;
+		lastFireTick = 0;
 		lastTickProcessed = ImageGUI.getInstance().getTicks();
 		currentRoom.reset();
 	}
